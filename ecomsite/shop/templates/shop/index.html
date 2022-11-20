@@ -1,0 +1,85 @@
+{% extends 'shop/base.html' %}
+
+{% block body %}
+    <div class="row">
+        {% for product in product_objects %}
+        <div class="col-md-3 mb-4">
+            <div class="border border-dark card shadow rounded">
+                <img src="{{ product.image }}"  class="card-img-top" style="height:275px; width:220px;">
+                <div class="card-body">
+                    <div id="nm{{product.id}}" class="card-title">{{ product.title }}</div>
+                    <div id="price{{product.id}}" class="card-text">{{ product.price }}</div>
+                </div>
+                <a href="/{{product.id}}" class="mb-1 btn btn-sm btn-primary">View</a>
+                <button id="{{product.id}}" class="atc btn btn-sm btn-success">Add to cart</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <br><br><br>
+
+    <div class="d-flex flex-row justify-content-center pagination">
+        {% if product_objects.has_previous %}
+            <div class="p-4"><a class="btn btn-outline-primary" href="?page={{ product_objects.previous_page_number }}">Previous</a></div>
+        {% endif %}
+            <div class="p-4"><a class="btn btn-outline-dark" href="?page={{ product_objects.number }}">{{ product_objects.number }}</a></div>
+        {% if product_objects.has_next %}
+            <div class="p-4"><a class=" btn btn-outline-primary" href="?page={{ product_objects.next_page_number }}">Next</a></div>
+        {% endif %}
+    </div>
+
+    
+<script type="text/javascript">
+    console.log("This is working");
+
+    if(localStorage.getItem('cart')==null){
+        var cart= {};
+    }
+    else{
+        cart=JSON.parse(localStorage.getItem('cart'));
+    }
+
+    $(document).on('click','.atc',function(){
+        console.log("The add to card button is clicked");
+        var item_id = this.id.toString();
+        console.log(item_id);
+
+        if(cart[item_id]!=undefined){
+            quantity=cart[item_id][0]+1;
+            cart[item_id][0]=quantity;
+            cart[item_id][2]= cart[item_id][2] + parseFloat(document.getElementById("price"+item_id).innerHTML);
+        }else {
+            quantity=1;
+            price = parseFloat(document.getElementById("price"+item_id).innerHTML);
+            name=document.getElementById("nm"+item_id).innerHTML;
+            cart[item_id]=[quantity,name,price];
+        }
+
+        console.log(cart);
+        localStorage.setItem('cart',JSON.stringify(cart)); 
+        document.getElementById("cart").innerHTML = "Cart(" + Object.keys(cart).length+ ")";
+
+    }); 
+
+    DisplayCart(cart);
+    function DisplayCart(cart) {
+        var cartString="";
+        cartString += "<h5>This is your cart</h5>";
+        var cartIndex=1;
+        for(var x in cart){
+            cartString+=cartIndex;
+            cartString+= document.getElementById("nm"+x).innerHTML+"Qty:"+cart[x][0]+ "</br>";
+            cartIndex+=1;
+        }
+
+        cartString+="<a href='/checkout'><button class='btn btn-warning' id='checkout'>Checkout</button></a>";
+
+        document.getElementById("cart").setAttribute('data-content',cartString);
+        $('[data-toggle="popover"]').popover();
+    }
+
+</script>
+    
+
+{% endblock %}

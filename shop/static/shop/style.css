@@ -1,0 +1,34 @@
+.card-text {
+    color: green;
+    font-weight:600;
+}
+
+.navbar-brand {
+    font-weight: 900;
+}
+
+.card-title {
+    font-weight: 900;
+}
+
+.roll_button
+{
+    margin-top: 140px;
+}
+
+.cart:hover
+{
+    background-color: white;
+    color: black;
+}
+
+
+footer{
+    overflow: visible;
+    margin-top: 10%;
+    height: 100%;
+    padding: 20px;
+    width: 100%;
+    background-color: black;
+    color: white;
+}
